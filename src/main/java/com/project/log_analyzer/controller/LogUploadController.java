@@ -2,6 +2,7 @@ package com.project.log_analyzer.controller;
 
 import com.project.log_analyzer.model.EndpointStats;
 import com.project.log_analyzer.service.LogAnalyzerService;
+import com.project.log_analyzer.service.LogSchedulerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -24,6 +25,7 @@ import java.util.List;
 public class LogUploadController {
 
     private final LogAnalyzerService logAnalyzerService;
+    private final LogSchedulerService logSchedulerService;
 
     @PostMapping("/analysis")
     public ResponseEntity<List<EndpointStats>> uploadLogFile(@RequestParam("file")MultipartFile file){
@@ -60,5 +62,12 @@ public class LogUploadController {
             return ResponseEntity.internalServerError().build();
         }
 
+    }
+
+
+    @GetMapping("/scheduled-stats")
+    public ResponseEntity<List<EndpointStats>> getStats(){
+        List<EndpointStats> response = logSchedulerService.getLatestStats();
+        return ResponseEntity.ok(response);
     }
 }
